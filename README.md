@@ -95,8 +95,7 @@ riyadh64/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd riyadh64
+   git clone https://github.com/jahanzaib-codes/intelligent-intraday-breakout-trading-bot
    ```
 
 2. **Install dependencies**
