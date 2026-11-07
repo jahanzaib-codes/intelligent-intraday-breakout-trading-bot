@@ -149,6 +149,16 @@ intelligent-intraday-breakout-trading-bot/
    ```
    Add your IBKR socket port (`7497`/`7496`), Telegram Bot Token, and Chat ID.
 
+4. **Configure Interactive Brokers TWS / Gateway:**
+   * In TWS, go to **Global Configuration $\rightarrow$ API $\rightarrow$ Settings**.
+   * Enable ✅ **"Enable ActiveX and Socket Clients"**.
+   * Uncheck ❌ **"Read-Only API"**.
+   * Ensure Socket Port matches `.env` (`7497` Paper / `7496` Live).
+
+<p align="center">
+  <img src="tws_api_settings.jpg" width="700" alt="Interactive Brokers TWS API Settings Configuration" style="border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.3);"/>
+</p>
+
 ---
 
 ## ▶️ Execution Command
