@@ -1,326 +1,179 @@
-# Intelligent Intraday Breakout Trading Bot
+# 🧠 Intelligent Intraday Breakout Trading Bot (AI & NASDAQ Momentum)
 
-A fully automated trading bot that identifies and executes high-momentum breakout trades during intraday sessions on NASDAQ using real-time data, smart technical filtering, and AI (XGBoost model) — with order execution via IB Gateway and real-time Telegram alerts.
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![XGBoost](https://img.shields.io/badge/ML-XGBoost_Probability_Model-FF6F00?style=flat-square)](https://xgboost.readthedocs.io)
+[![Interactive Brokers](https://img.shields.io/badge/IBKR-Gateway_TWS_API-E01E2E?style=flat-square)](https://interactivebrokers.com)
+[![Telegram](https://img.shields.io/badge/Alerts-Telegram_Live_Notifier-229ED9?style=flat-square&logo=telegram&logoColor=white)](https://core.telegram.org/bots)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-## 🚀 Features
+> An institutional quantitative intraday breakout trading system engineered for **NASDAQ momentum equities**. Combines high-velocity stock screening (volume surges, dollar volume expansion, Bollinger width), a trained **XGBoost machine learning probability classifier**, tiered capital risk protection, and automated **Interactive Brokers (IBKR)** order routing with real-time Telegram alerts.
 
-### Stock Screening
-- **Real-time NASDAQ screening** with Webull-style filters
-- **Price range**: $0.30 to $5.00
-- **Volume surge**: ≥ 1.5× average volume (3-month)
-- **Market cap**: $10M to $3B
-- **RSI**: between 50 and 80
-- **Momentum filter**: Dollar volume > Market cap
+---
 
-### Technical Analysis
-- **RSI** (Relative Strength Index)
-- **Bollinger Bands Width** for volatility measurement
-- **5-minute volatility** calculation
-- **Green candle ratio** (last 20 candles)
-- **Breakout detection** from recent resistance
-- **Moving averages** (MA10, MA30, EMA5, EMA10)
+### 💼 Need Custom Quantitative Trading Bots, ML Predictors, or Broker Automation?
+I build institutional trading software, low-latency market screeners, predictive ML models, and broker execution systems.
+* 💬 **Telegram:** [@JanzebBlockdev](https://t.me/JanzebBlockdev)
+* 💼 **Fiverr Profile:** [Verified Quantitative Developer (Fiverr)](https://tinyurl.com/2wruxnsx)
+* 📧 **Email:** `jahanzaibchanna70@gmail.com`
 
-### AI Prediction
-- **XGBoost model** for trade success prediction
-- **Feature engineering** from technical indicators
-- **Probability scoring** (0-100)
-- **Threshold-based filtering** (≥70 score required)
+---
 
-### Risk Management
-- **Dynamic stop-losses** based on price tiers:
-  - <$1: 5%
-  - <$3: 4%
-  - <$5: 3%
-- **Profit targets**:
-  - Target 1 (10%): Move stop to entry
-  - Target 2 (25%): Move stop to +10%
-  - Target 3+: Enable trailing stop (5%)
-- **Position sizing**: 2% of portfolio per trade
-- **Maximum positions**: 5 concurrent trades
+## 📑 Table of Contents
+1. [Key Architectural Highlights](#-key-architectural-highlights)
+2. [End-to-End Decision Pipeline](#-end-to-end-decision-pipeline)
+3. [Stock Screening & Quantitative Filters](#-stock-screening--quantitative-filters)
+4. [Machine Learning Prediction Engine](#-machine-learning-prediction-engine)
+5. [Multi-Tiered Risk & Profit Ladder](#-multi-tiered-risk--profit-ladder)
+6. [Project Structure](#-project-structure)
+7. [Prerequisites & Installation](#-prerequisites--installation)
+8. [Configuration & Environment Setup](#-configuration--environment-setup)
+9. [Explore Other Quantitative Projects](#-explore-other-quantitative-projects)
+10. [Disclaimer](#-disclaimer)
 
-### Market Timing
-- **Trading hours**: 9:30 AM - 3:20 PM ET
-- **Position closure**: 3:50 PM ET (10 min before close)
-- **Weekend trading**: Disabled
+---
 
-### Notifications
-- **Real-time Telegram alerts** for:
-  - Buy order executions
-  - Sell triggers (stop-loss/target)
-  - Stop-loss updates
-  - Profit target achievements
-  - P&L summaries (every 15 minutes)
-  - Error alerts
+## 🚀 Key Architectural Highlights
+
+* **High-Surge Momentum Screener:** Screens real-time NASDAQ equities matching explosive volume surges ($\ge 1.5\times$ 3-month average), dollar volume expansion, and tight volatility bands.
+* **XGBoost Probability Filter:** Computes live multi-indicator feature vectors (RSI, Bollinger Band Width, candle color ratios, moving average alignments) and enforces a strict $\ge 70\%$ ML success probability threshold before triggering orders.
+* **Tiered Dynamic Stop-Losses:** Automatically assigns risk limits scaled to equity price categories (3% for \$5 stocks, 5% for penny tiers).
+* **Multi-Stage Profit Scaling:** Automatically locks in profits at $+10\%$ (breakeven stop), $+25\%$ (trail lock), and engages a $5\%$ trailing stop for remaining runners.
+* **Real-Time Telegram Operations Dispatcher:** Instant mobile alerts on fills, stops, profit locks, and automated 15-minute P&L equity reports.
+
+---
+
+## 🏛️ End-to-End Decision Pipeline
+
+```mermaid
+flowchart TD
+    subgraph Market Scanning
+        A["Real-Time NASDAQ Universe"] --> B["Webull-Style Screener Filter"]
+        B -->|Volume Surge >= 1.5x, Dollar Vol > MarketCap| C["Shortlisted Candidate Tickers"]
+    end
+
+    subgraph Quantitative & AI Scoring
+        C --> D["Feature Engineering (RSI, Bollinger Width, MAs)"]
+        D --> E["XGBoost Probability Classifier"]
+        E --> F{"Confidence Score >= 70%?"}
+        F -- No --> G["[REJECT] Insufficient Edge"]
+    end
+
+    subgraph Order Routing & Risk Engine
+        F -- Yes --> H["Position Sizing (Max 2% Risk, 5 Concurrency)"]
+        H --> I["Dispatch Entry via IBKR Gateway (Port 7497/7496)"]
+        I --> J["Position Active: Monitor Targets & Trailing Stops"]
+        J --> K["Telegram Dispatcher: Real-Time Execution Card"]
+    end
+```
+
+---
+
+## 🔍 Stock Screening & Quantitative Filters
+
+* **Price Range:** \$0.30 – \$5.00 (High-velocity small/micro caps).
+* **Volume Surge:** $\ge 1.5\times$ average 3-month volume.
+* **Market Capitalization:** \$10M to \$3B.
+* **RSI Momentum:** Dynamic range between $50$ and $80$.
+* **Dollar Volume Expansion:** Dollar Volume > Market Cap (Surge accumulation).
+* **Candle Ratio:** Minimum 60% green candles over last 20 5-minute bars.
+
+---
+
+## 🤖 Machine Learning Prediction Engine
+
+The integrated XGBoost classification model assesses trade success probability using real-time feature vectors:
+* **Momentum:** Relative Strength Index (RSI 14) + rate-of-change.
+* **Volatility:** 5-minute ATR and Bollinger Band width compression / expansion.
+* **Trend Cohesion:** Moving averages alignment (MA10, MA30, EMA5, EMA10).
+* **Scoring Guard:** Trades are rejected if the ML confidence probability is $< 70\%$.
+
+---
+
+## 🛡️ Multi-Tiered Risk & Profit Ladder
+
+### Dynamic Stop-Loss Thresholds:
+| Price Tier | Initial Risk Stop |
+| :--- | :--- |
+| **Below \$1.00** | 5.0% Stop Loss |
+| **\$1.00 – \$3.00** | 4.0% Stop Loss |
+| **\$3.00 – \$5.00** | 3.0% Stop Loss |
+
+### Profit-Taking Scaling:
+* **Target 1 (+10% Gain):** Move Stop Loss to Entry (Guaranteed Breakeven).
+* **Target 2 (+25% Gain):** Move Stop Loss to $+10\%$ (Guaranteed Profit Lock).
+* **Target 3 (+35%+):** Activate $5\%$ Trailing Stop for max trend capture.
+* **Market Close Flatten:** Hard position liquidation at 15:50 ET (10 minutes before market close).
+
+---
 
 ## 📁 Project Structure
 
 ```
-riyadh64/
-├── main.py                 # Main entry point
-├── config.py              # Configuration settings
-├── requirements.txt       # Python dependencies
+intelligent-intraday-breakout-trading-bot/
+├── main.py                 # Bot execution entry point
+├── config.py              # Strategy parameters & risk configurations
+├── requirements.txt       # Dependencies
 ├── env_example.txt        # Environment variables template
-├── README.md             # This file
-├── src/                  # Source code
-│   ├── __init__.py
-│   ├── main_bot.py       # Main bot orchestrator
-│   ├── data/             # Data handling
-│   │   ├── __init__.py
-│   │   └── stock_screener.py
-│   ├── analysis/         # Technical analysis
-│   │   ├── __init__.py
-│   │   └── technical_indicators.py
-│   ├── ai/               # AI model
-│   │   ├── __init__.py
-│   │   └── prediction_model.py
-│   ├── trading/          # Trading logic
-│   │   ├── __init__.py
-│   │   └── risk_management.py
-│   └── notifications/    # Notifications
-│       ├── __init__.py
-│       └── telegram_notifier.py
-├── models/               # AI model files
-├── logs/                 # Log files
-└── data/                 # Data storage
+├── README.md             # Technical documentation
+├── src/                  # Source modules
+│   ├── main_bot.py       # Orchestration engine
+│   ├── data/             # Stock screener & Polygon/IBKR feeds
+│   ├── analysis/         # Indicators & feature extraction
+│   ├── ai/               # XGBoost inference model
+│   ├── trading/          # Risk manager & order execution
+│   └── notifications/    # Telegram dispatcher
+├── models/               # Pre-trained ML model checkpoints
+└── logs/                 # Execution & trade logs
 ```
-
-## 🛠️ Installation
-
-### Prerequisites
-- Python 3.8+
-- Interactive Brokers Gateway 10.38 (for live trading)
-- Telegram Bot Token (for notifications)
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/jahanzaib-codes/intelligent-intraday-breakout-trading-bot
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp env_example.txt .env
-   # Edit .env with your credentials
-   ```
-
-4. **Set up Telegram Bot**
-   - Create a bot via @BotFather on Telegram
-   - Get your bot token and chat ID
-   - Add to `.env` file
-
-5. **Configure Interactive Brokers** (for live trading)
-   - Install IB Gateway 10.38
-   - Configure connection settings in `.env`
-   - Enable API connections in TWS/Gateway
-
-## ⚙️ Configuration
-
-### Environment Variables (.env)
-```bash
-# Telegram Configuration
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-TELEGRAM_CHAT_ID=your_chat_id_here
-
-# Interactive Brokers Configuration
-IB_HOST=127.0.0.1
-IB_PORT=7497
-IB_CLIENT_ID=1
-```
-
-### Key Configuration Parameters (config.py)
-- **Screening filters**: Price range, volume, market cap, RSI
-- **Technical indicators**: Periods, thresholds
-- **Risk management**: Stop-loss tiers, position sizing
-- **Market timing**: Trading hours, timezone
-- **AI model**: Features, threshold, model path
-
-## 🚀 Usage
-
-### Running the Bot
-
-1. **Start the bot**
-   ```bash
-   python main.py
-   ```
-
-2. **Monitor via Telegram**
-   - Bot will send startup notification
-   - Real-time alerts for all trading activities
-   - P&L summaries every 15 minutes
-
-3. **Check logs**
-   ```bash
-   tail -f logs/trading_bot.log
-   ```
-
-### Bot Controls
-
-The bot runs automatically during market hours. For manual control:
-
-```python
-from src.main_bot import TradingBot
-
-bot = TradingBot()
-
-# Start bot
-bot.start()
-
-# Pause trading
-bot.pause()
-
-# Resume trading
-bot.resume()
-
-# Stop bot
-bot.stop()
-
-# Get status
-status = bot.get_status()
-```
-
-## 📊 Trading Strategy
-
-### Entry Conditions
-All of the following must be met:
-- ✅ Price between $0.30-$5.00
-- ✅ Volume surge ≥ 1.5× average
-- ✅ RSI > 50
-- ✅ Bollinger Band Width > 0.05
-- ✅ Green candle ratio ≥ 60%
-- ✅ Breakout above recent resistance
-- ✅ 5-min volatility ≥ 2%
-- ✅ AI Score ≥ 70
-
-### Exit Conditions
-- **Stop-loss**: Dynamic based on price tier
-- **Profit targets**: 10% and 25% gains
-- **Trailing stop**: 5% after 25% target
-- **End of day**: All positions closed at 3:50 PM ET
-
-## 🤖 AI Model
-
-### Features Used
-- Price, volume, average volume
-- RSI, Bollinger Band width, volatility
-- Green candle ratio, breakout detection
-- Moving averages, market cap
-- Price change percentage
-
-### Model Training
-- **Algorithm**: XGBoost Classifier
-- **Features**: 12 technical indicators
-- **Output**: Probability score (0-100)
-- **Threshold**: 70% minimum for trade entry
-
-### Model Management
-- Automatic model loading/saving
-- Dummy model creation for testing
-- Retraining capabilities
-- Model performance monitoring
-
-## 📈 Performance Monitoring
-
-### Real-time Metrics
-- Active positions count
-- Total portfolio value
-- Unrealized P&L
-- Average P&L percentage
-- Position history
-
-### Logging
-- Comprehensive logging to `logs/trading_bot.log`
-- Error tracking and notifications
-- Performance analytics
-- Debug information
-
-## 🔧 Customization
-
-### Adding New Indicators
-1. Add calculation in `technical_indicators.py`
-2. Update feature list in `config.py`
-3. Retrain AI model with new features
-
-### Modifying Risk Parameters
-1. Edit `STOP_LOSS_TIERS` in `config.py`
-2. Adjust `PROFIT_TARGETS`
-3. Modify position sizing rules
-
-### Changing Screening Criteria
-1. Update `SCREENER_CONFIG` in `config.py`
-2. Modify filter logic in `stock_screener.py`
-3. Test with historical data
-
-## ⚠️ Risk Disclaimer
-
-**This software is for educational and research purposes only. Trading involves substantial risk of loss and is not suitable for all investors. Past performance does not guarantee future results.**
-
-### Important Notes
-- Always test thoroughly in paper trading mode
-- Start with small position sizes
-- Monitor the bot continuously
-- Have proper risk management in place
-- Understand all trading strategies before live deployment
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Telegram notifications not working**
-   - Check bot token and chat ID
-   - Verify internet connection
-   - Test with `notifier.test_connection()`
-
-2. **No stocks passing screener**
-   - Check market hours
-   - Verify data sources
-   - Adjust screening criteria
-
-3. **AI model errors**
-   - Ensure XGBoost is installed
-   - Check model file path
-   - Verify feature compatibility
-
-4. **Performance issues**
-   - Monitor system resources
-   - Check API rate limits
-   - Optimize data fetching
-
-### Debug Mode
-Enable debug logging in `config.py`:
-```python
-MONITORING_CONFIG = {
-    'log_level': 'DEBUG',
-    # ... other settings
-}
-```
-
-## 📞 Support
-
-For issues and questions:
-1. Check the logs in `logs/trading_bot.log`
-2. Review configuration settings
-3. Test individual components
-4. Consult documentation
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🔄 Version History
-
-- **v1.0.0**: Initial release with core functionality
-  - Stock screening and technical analysis
-  - AI prediction model
-  - Risk management system
-  - Telegram notifications
-  - Market timing controls
 
 ---
 
-**Happy Trading! 🚀📈** 
+## 🛠️ Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/jahanzaib-codes/intelligent-intraday-breakout-trading-bot.git
+   cd intelligent-intraday-breakout-trading-bot
+   ```
+
+2. **Setup virtual environment & install requirements:**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Configure Environment:**
+   ```bash
+   cp env_example.txt .env
+   ```
+   Add your IBKR socket port (`7497`/`7496`), Telegram Bot Token, and Chat ID.
+
+---
+
+## ▶️ Execution Command
+
+Ensure Interactive Brokers Gateway or TWS is running, then execute:
+
+```bash
+python main.py
+```
+
+---
+
+## ⭐ Explore Other Quantitative Projects
+
+* 🧠 **[Interactive Brokers AI 0DTE Options Bot & GUI](https://github.com/jahanzaib-codes/ibkr-ai-trading-bot-gui)** — ML-driven options execution terminal with XGBoost and Tkinter.
+* 📉 **[IBKR Automated Trailing Stop Orders](https://github.com/jahanzaib-codes/ibkr-trailing-orders)** — CSV batch trailing stop limit order dispatcher with loss prevention.
+* 📊 **[Real-Time NASDAQ Screener & ATR Bot](https://github.com/jahanzaib-codes/RealTime-ATR-Screener-Trader)** — Polygon.io WebSocket screener and chandelier execution engine.
+* 📱 **[IBKR Telegram Bot & TradingView Webhook](https://github.com/jahanzaib-codes/ibkr-telegram-trading-bot)** — Webhook listener and remote Telegram trading terminal.
+* ⚡ **[Solana Pump.fun 0-Block Sniper Bot](https://github.com/jahanzaib-codes/solana-pumpfun-sniper-bot)** — Ultra low-latency meme coin sniper with Jito MEV bundles.
+
+---
+
+## ⚠️ Disclaimer
+
+*This trading software is engineered for educational, algorithmic research, and demonstration purposes. Intraday trading carries significant financial risk. Thoroughly backtest and paper trade on IBKR demo accounts prior to live capital deployment.*
+
+---
+*Maintained by **Jahanzaib** ([@jahanzaib-codes](https://github.com/jahanzaib-codes))*
