@@ -14,7 +14,6 @@
 I build institutional trading software, low-latency market screeners, predictive ML models, and broker execution systems.
 * 💬 **Telegram:** [@JanzebBlockdev](https://t.me/JanzebBlockdev)
 * 💼 **Fiverr Profile:** [Verified Quantitative Developer (Fiverr)](https://www.fiverr.com/jahanzaib313110)
-* 📧 **Email:** `jahanzaibchanna70@gmail.com`
 
 ---
 
